@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>然^ ̳> ·̫ < ̳^怡 - 私人聊天室</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 100%);
+            color: #5a5a5a;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.5s ease;
+        }
+        
+        .header {
+            background-color: #ff9eb5;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(255, 105, 135, 0.2);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: normal;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header p {
+            font-size: 14px;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .header-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #ffffff;
+            padding: 8px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+        
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: inset 0 0 5px rgba(255, 105, 135, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            max-width: 70%;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .received {
+            background-color: #ffffff;
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+        
+        .sent {
+            background: linear-gradient(135deg, var(--sent-bubble-color-1, #ff6b9d) 0%, var(--sent-bubble-color-2, #ff8fab) 100%);
+            border-bottom-right-radius: 5px;
+            align-self: flex-end;
+            margin-left: auto;
+            color: white;
+        }
+        
+        .message-content {
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #ff8fab;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .date-divider {
+            text-align: center;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .date-divider span {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #ff6b9d;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-area {
+            display: flex;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(255, 105, 135, 0.1);
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            outline: none;
+            resize: none;
+            max-height: 120px;
+            transition: all 0.3s;
+        }
+        
+        .message-input:focus {
+            border-color: #ff6b9d;
+            box-shadow: 0 0 0 2px rgba(255, 107, 157, 0.2);
+        }
+        
+        .send-button {
+            background: linear-gradient(135deg, var(--sent-bubble-color-1, #ff6b9d) 0%, var(--sent-bubble-color-2, #ff8fab) 100%);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            margin-left: 10px;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(255, 107, 157, 0.3);
+        }
+        
+        .send-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 12px rgba(255, 107, 157, 0.4);
+        }
+        
+        .send-button:active {
+            transform: scale(0.95);
+        }
+        
+        .send-icon {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6b9d;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff8fab;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #ff6b9d;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .tab-container {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid #ff6b9d;
+            color: #ff6b9d;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .color-picker-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .wallpaper-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .wallpaper-option {
+            height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .wallpaper-option:hover {
+            transform: scale(1.05);
+        }
+        
+        .wallpaper-option.active {
+            border: 2px solid #ff6b9d;
+        }
+        
+        .style-presets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .style-preset {
+            height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+        
+        .style-preset:hover {
+            transform: scale(1.05);
+        }
+        
+        .style-preset.active {
+            border: 2px solid #ff6b9d;
+        }
+        
+        .word-stats-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .word-stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+        }
+        
+        .word-stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .word-count {
+            background-color: #ff6b9d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .reply-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .reply-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+        }
+        
+        .reply-item:last-child {
+            border-bottom: none;
+        }
+        
+        .delete-reply {
+            background: none;
+            border: none;
+            color: #ff6b9d;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--sent-bubble-color-1, #ff6b9d) 0%, var(--sent-bubble-color-2, #ff8fab) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(255, 107, 157, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(255, 182, 193, 0.3);
+            color: #ff6b9d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 182, 193, 0.5);
+        }
+        
+        /* 滚动条样式 */
+        .chat-messages::-webkit-scrollbar,
+        .reply-list::-webkit-scrollbar,
+        .word-stats-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track,
+        .reply-list::-webkit-scrollbar-track,
+        .word-stats-list::-webkit-scrollbar-track {
+            background: rgba(255, 182, 193, 0.1);
+            border-radius: 10px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb,
+        .reply-list::-webkit-scrollbar-thumb,
+        .word-stats-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 107, 157, 0.5);
+            border-radius: 10px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover,
+        .reply-list::-webkit-scrollbar-thumb:hover,
+        .word-stats-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 107, 157, 0.7);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .chat-container {
+                padding: 10px;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+            
+            .wallpaper-grid, .style-presets {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>然^ ̳> ·̫ < ̳^怡</h1>
+            <p>绝对私人 · 一对一聊天</p>
+        </div>
+        <div class="header-controls">
+            <button class="header-btn" id="wordStats" title="对方常用语统计">📊</button>
+            <button class="header-btn" id="appearanceSettings" title="外观设置">🎨</button>
+            <button class="header-btn" id="replySettings" title="自定义回复">💬</button>
+            <button class="header-btn" id="userSettings" title="用户设置">👤</button>
+        </div>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <!-- 消息会动态添加到这里 -->
+        </div>
+        
+        <div class="input-area">
+            <textarea class="message-input" id="messageInput" placeholder="输入消息..." rows="1"></textarea>
+            <button class="send-button" id="sendButton">
+                <svg class="send-icon" viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 对方常用语统计模态框 -->
+    <div class="modal" id="wordStatsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">对方常用语统计</h3>
+                <button class="close-modal" id="closeWordStatsModal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">对方最常说的话（按出现次数排序）</label>
+                <div class="word-stats-list" id="wordStatsList">
+                    <!-- 常用语统计会动态添加到这里 -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelWordStats">关闭</button>
+                <button class="btn btn-primary" id="clearWordStats">清空统计</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 外观设置模态框 -->
+    <div class="modal" id="appearanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">外观设置</h3>
+                <button class="close-modal" id="closeAppearanceModal">&times;</button>
+            </div>
+            
+            <div class="tab-container">
+                <div class="tab active" data-tab="wallpaper">壁纸</div>
+                <div class="tab" data-tab="style">气泡风格</div>
+            </div>
+            
+            <!-- 壁纸设置 -->
+            <div class="tab-content active" id="wallpaperTab">
+                <div class="form-group">
+                    <label class="form-label">选择壁纸</label>
+                    <div class="wallpaper-grid" id="wallpaperGrid">
+                        <!-- 壁纸选项会动态添加到这里 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 气泡风格设置 -->
+            <div class="tab-content" id="styleTab">
+                <div class="form-group">
+                    <label class="form-label">气泡颜色预设</label>
+                    <div class="style-presets" id="stylePresets">
+                        <!-- 风格预设会动态添加到这里 -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">自定义气泡颜色</label>
+                    <div class="color-picker-group">
+                        <div class="color-preview" id="sentColorPreview1"></div>
+                        <input type="color" class="form-input" id="sentColor1" value="#ff6b9d" style="width: 60px; height: 40px;">
+                        <span>到</span>
+                        <div class="color-preview" id="sentColorPreview2"></div>
+                        <input type="color" class="form-input" id="sentColor2" value="#ff8fab" style="width: 60px; height: 40px;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="applyAppearance">应用设置</button>
+                <button class="btn btn-secondary" id="cancelAppearance">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户设置模态框 -->
+    <div class="modal" id="userSettingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">用户设置</h3>
+                <button class="close-modal" id="closeUserSettingsModal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="userNickname">您的昵称</label>
+                <input type="text" class="form-input" id="userNickname" placeholder="请输入您的昵称">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="partnerNickname">对方昵称</label>
+                <input type="text" class="form-input" id="partnerNickname" placeholder="请输入对方昵称">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelUserSettings">取消</button>
+                <button class="btn btn-primary" id="saveUserSettings">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 回复设置模态框 -->
+    <div class="modal" id="replySettingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">自定义回复</h3>
+                <button class="close-modal" id="closeReplySettingsModal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="newReply">添加新回复</label>
+                <input type="text" class="form-input" id="newReply" placeholder="输入新的回复内容">
+                <button class="btn btn-primary" id="addReply" style="margin-top: 10px; width: 100%;">添加回复</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">当前回复列表</label>
+                <div class="reply-list" id="replyList">
+                    <!-- 回复列表会动态添加到这里 -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelReplySettings">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const userSettings = document.getElementById('userSettings');
+            const replySettings = document.getElementById('replySettings');
+            const appearanceSettings = document.getElementById('appearanceSettings');
+            const wordStats = document.getElementById('wordStats');
+            
+            // 模态框相关元素
+            const userSettingsModal = document.getElementById('userSettingsModal');
+            const replySettingsModal = document.getElementById('replySettingsModal');
+            const appearanceModal = document.getElementById('appearanceModal');
+            const wordStatsModal = document.getElementById('wordStatsModal');
+            
+            // 关闭按钮
+            const closeUserSettingsModal = document.getElementById('closeUserSettingsModal');
+            const closeReplySettingsModal = document.getElementById('closeReplySettingsModal');
+            const closeAppearanceModal = document.getElementById('closeAppearanceModal');
+            const closeWordStatsModal = document.getElementById('closeWordStatsModal');
+            
+            // 取消按钮
+            const cancelUserSettings = document.getElementById('cancelUserSettings');
+            const cancelReplySettings = document.getElementById('cancelReplySettings');
+            const cancelAppearance = document.getElementById('cancelAppearance');
+            const cancelWordStats = document.getElementById('cancelWordStats');
+            
+            // 保存按钮
+            const saveUserSettings = document.getElementById('saveUserSettings');
+            const applyAppearance = document.getElementById('applyAppearance');
+            const addReply = document.getElementById('addReply');
+            const clearWordStats = document.getElementById('clearWordStats');
+            
+            // 表单元素
+            const userNickname = document.getElementById('userNickname');
+            const partnerNickname = document.getElementById('partnerNickname');
+            const newReply = document.getElementById('newReply');
+            const replyList = document.getElementById('replyList');
+            const wallpaperGrid = document.getElementById('wallpaperGrid');
+            const stylePresets = document.getElementById('stylePresets');
+            const wordStatsList = document.getElementById('wordStatsList');
+            const sentColor1 = document.getElementById('sentColor1');
+            const sentColor2 = document.getElementById('sentColor2');
+            const sentColorPreview1 = document.getElementById('sentColorPreview1');
+            const sentColorPreview2 = document.getElementById('sentColorPreview2');
+            
+            // 选项卡元素
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // 用户数据
+            let userData = {
+                nickname: '用户',
+                partnerNickname: '对方',
+                theme: 'light',
+                wallpaper: 'default',
+                sentBubbleColor1: '#ff6b9d',
+                sentBubbleColor2: '#ff8fab',
+                autoSendEnabled: true
+            };
+            
+            // 聊天记录
+            let chatHistory = [];
+            
+            // 对方消息统计
+            let partnerWordStats = {};
+            
+            // 壁纸选项
+            const wallpapers = [
+                { id: 'default', name: '默认粉色', gradient: 'linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 100%)' },
+                { id: 'purple', name: '梦幻紫', gradient: 'linear-gradient(135deg, #d8b5ff 0%, #a78bfa 100%)' },
+                { id: 'blue', name: '天空蓝', gradient: 'linear-gradient(135deg, #a8edea 0%, #6bb1f7 100%)' },
+                { id: 'green', name: '清新绿', gradient: 'linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%)' },
+                { id: 'orange', name: '温暖橙', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
+                { id: 'lavender', name: '薰衣草', gradient: 'linear-gradient(135deg, #e0c3fc 0%, #b993f6 100%)' }
+            ];
+            
+            // 风格预设
+            const stylePresetsData = [
+                { name: '可爱粉', color1: '#ff6b9d', color2: '#ff8fab' },
+                { name: '梦幻紫', color1: '#9d4edd', color2: '#c77dff' },
+                { name: '天空蓝', color1: '#4cc9f0', color2: '#4895ef' },
+                { name: '清新绿', color1: '#38b000', color2: '#70e000' },
+                { name: '温暖橙', color1: '#ff9e00', color2: '#ffb700' },
+                { name: '浪漫红', color1: '#ff5c8a', color2: '#ff7597' }
+            ];
+            
+            // 默认自动回复库
+            let autoReplies = [
+                "在吗？", "我在的", "在呢", "怎么了？", "今天过得怎么样？", "最近还好吗？", 
+                "终于想起我了？", "想你了", "晚上好", "早安", "午安", "我同意。", 
+                "嗯，听起来确实是这样。", "我明白了", "好的，稍后再聊。", "我理解你的意思。", 
+                "这个想法很有创意。", "好的，我记下了。", "贴贴", "有什么新消息吗？", 
+                "保持联系好不好", "祝你有个美好的一天。", "愿你自由", "这个消息不错", 
+                "我希望能帮上忙。", "不要担心，一切都会好起来的。", "或者我们可以换个想法？", 
+                "你最近在忙些什么呢？", "这个周末你有什么计划吗？", "我想我们应该讨论一下这个问题。", 
+                "我很想听听你的想法。", "告诉我更多。", "你认为下一步是什么？", 
+                "我们应该如何解决这个问题？", "我需要仔细想想怎么回复。", "你有什么建议吗？", 
+                "这对我来说是个新领域。", "让我们一起努力。", "这个周末过得怎么样？", 
+                "最近读了什么有趣的书吗？", "有没有什么让你感到惊喜的事情？", "感觉今天效率很高呢！", 
+                "我正在学习一些新的东西。", "最近有什么让你特别兴奋的事情吗？", "今天的天气不错。", 
+                "收到，我会尽快查看的。", "期待🤧", "你希望我是谁？", "抱歉🥺。", 
+                "我能感受到你的热情，我也很期待的。", "虽然目前的情况有些复杂，但我相信一切都会好起来的。", 
+                "嗯", "好的", "明白", "收到", "了解", "OK", "可以", "没问题", "当然", 
+                "确实", "没错", "同意", "理解", "谢谢", "不客气", "抱歉", "没关系", 
+                "稍等", "马上", "好呀", "我正在忙，稍后回复你。", "信号不太好，可能回复会延迟。", 
+                "让我确认一下信息再给你准确答复。", "别走，陪陪我", "你会永远爱我吗？", 
+                "我不想欺骗你", "此刻我想和你永远在一起", "他朝若是同淋雪，此生也算共白头", 
+                "怜悯我，然后爱我吧", "撒娇，你会喜欢吗？", "你喜欢帅一点还是可爱一点？", 
+                "你在看什么？", "吃醋怎么了？我不能吃醋吗？", "没有我想说的", "链接有些混乱", 
+                "话非我本意", "相信我", "不是这个意思", "误会了", "就这样撒娇🥺", 
+                "不太习惯这个", "是的", "不是的", "多看看我吧", "可爱", "当然了", 
+                "你无人可及", "不要熬夜", "正在熬夜", "失眠了"
+            ];
+            
+            // 定时器变量
+            let autoSendTimer = null;
+            
+            // 初始化
+            function init() {
+                loadData();
+                setupEventListeners();
+                startAutoSend();
+            }
+            
+            // 从本地存储加载数据
+            function loadData() {
+                const savedUserData = localStorage.getItem('chatUserData');
+                const savedChatHistory = localStorage.getItem('chatHistory');
+                const savedReplies = localStorage.getItem('autoReplies');
+                const savedWordStats = localStorage.getItem('partnerWordStats');
+                
+                if (savedUserData) {
+                    userData = JSON.parse(savedUserData);
+                    applyWallpaper(userData.wallpaper);
+                    applyBubbleColors(userData.sentBubbleColor1, userData.sentBubbleColor2);
+                    userNickname.value = userData.nickname;
+                    partnerNickname.value = userData.partnerNickname;
+                }
+                
+                if (savedChatHistory) {
+                    chatHistory = JSON.parse(savedChatHistory);
+                } else {
+                    addInitialMessages();
+                }
+                
+                if (savedReplies) {
+                    autoReplies = JSON.parse(savedReplies);
+                }
+                
+                if (savedWordStats) {
+                    partnerWordStats = JSON.parse(savedWordStats);
+                } else {
+                    updateWordStats();
+                }
+                
+                renderChatHistory();
+                renderReplyList();
+                renderWallpaperOptions();
+                renderStylePresets();
+                updateColorInputs();
+            }
+            
+            // 设置事件监听器
+            function setupEventListeners() {
+                // 发送消息
+                sendButton.addEventListener('click', sendMessage);
+                messageInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+                
+                // 自动调整输入框高度
+                messageInput.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+                
+                // 模态框打开
+                userSettings.addEventListener('click', () => userSettingsModal.style.display = 'flex');
+                replySettings.addEventListener('click', () => replySettingsModal.style.display = 'flex');
+                appearanceSettings.addEventListener('click', () => appearanceModal.style.display = 'flex');
+                wordStats.addEventListener('click', () => {
+                    renderWordStats();
+                    wordStatsModal.style.display = 'flex';
+                });
+                
+                // 模态框关闭
+                closeUserSettingsModal.addEventListener('click', () => userSettingsModal.style.display = 'none');
+                closeReplySettingsModal.addEventListener('click', () => replySettingsModal.style.display = 'none');
+                closeAppearanceModal.addEventListener('click', () => appearanceModal.style.display = 'none');
+                closeWordStatsModal.addEventListener('click', () => wordStatsModal.style.display = 'none');
+                
+                cancelUserSettings.addEventListener('click', () => userSettingsModal.style.display = 'none');
+                cancelReplySettings.addEventListener('click', () => replySettingsModal.style.display = 'none');
+                cancelAppearance.addEventListener('click', () => appearanceModal.style.display = 'none');
+                cancelWordStats.addEventListener('click', () => wordStatsModal.style.display = 'none');
+                
+                // 保存设置
+                saveUserSettings.addEventListener('click', saveUserSettingsHandler);
+                applyAppearance.addEventListener('click', applyAppearanceHandler);
+                addReply.addEventListener('click', addReplyHandler);
+                clearWordStats.addEventListener('click', clearWordStatsHandler);
+                
+                // 颜色输入变化
+                sentColor1.addEventListener('input', () => sentColorPreview1.style.backgroundColor = sentColor1.value);
+                sentColor2.addEventListener('input', () => sentColorPreview2.style.backgroundColor = sentColor2.value);
+                
+                // 选项卡切换
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabId = this.getAttribute('data-tab');
+                        
+                        // 更新活动选项卡
+                        tabs.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // 显示对应的内容
+                        tabContents.forEach(content => {
+                            content.classList.remove('active');
+                            if (content.id === `${tabId}Tab`) {
+                                content.classList.add('active');
+                            }
+                        });
+                    });
+                });
+            }
+            
+            // 保存数据到本地存储
+            function saveData() {
+                localStorage.setItem('chatUserData', JSON.stringify(userData));
+                localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+                localStorage.setItem('autoReplies', JSON.stringify(autoReplies));
+                localStorage.setItem('partnerWordStats', JSON.stringify(partnerWordStats));
+            }
+            
+            // 应用壁纸
+            function applyWallpaper(wallpaperId) {
+                const wallpaper = wallpapers.find(w => w.id === wallpaperId) || wallpapers[0];
+                document.body.style.background = wallpaper.gradient;
+                userData.wallpaper = wallpaperId;
+                saveData();
+            }
+            
+            // 应用气泡颜色
+            function applyBubbleColors(color1, color2) {
+                document.documentElement.style.setProperty('--sent-bubble-color-1', color1);
+                document.documentElement.style.setProperty('--sent-bubble-color-2', color2);
+                userData.sentBubbleColor1 = color1;
+                userData.sentBubbleColor2 = color2;
+                saveData();
+            }
+            
+            // 更新颜色输入框
+            function updateColorInputs() {
+                sentColor1.value = userData.sentBubbleColor1;
+                sentColor2.value = userData.sentBubbleColor2;
+                sentColorPreview1.style.backgroundColor = userData.sentBubbleColor1;
+                sentColorPreview2.style.backgroundColor = userData.sentBubbleColor2;
+            }
+            
+            // 渲染壁纸选项
+            function renderWallpaperOptions() {
+                wallpaperGrid.innerHTML = '';
+                wallpapers.forEach(wallpaper => {
+                    const option = document.createElement('div');
+                    option.className = `wallpaper-option ${wallpaper.id === userData.wallpaper ? 'active' : ''}`;
+                    option.style.background = wallpaper.gradient;
+                    option.dataset.id = wallpaper.id;
+                    option.addEventListener('click', function() {
+                        applyWallpaper(this.dataset.id);
+                        document.querySelectorAll('.wallpaper-option').forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                    wallpaperGrid.appendChild(option);
+                });
+            }
+            
+            // 渲染风格预设
+            function renderStylePresets() {
+                stylePresets.innerHTML = '';
+                stylePresetsData.forEach(preset => {
+                    const presetElement = document.createElement('div');
+                    presetElement.className = `style-preset ${preset.color1 === userData.sentBubbleColor1 && preset.color2 === userData.sentBubbleColor2 ? 'active' : ''}`;
+                    presetElement.style.background = `linear-gradient(135deg, ${preset.color1} 0%, ${preset.color2} 100%)`;
+                    presetElement.textContent = preset.name;
+                    presetElement.dataset.color1 = preset.color1;
+                    presetElement.dataset.color2 = preset.color2;
+                    presetElement.addEventListener('click', function() {
+                        applyBubbleColors(this.dataset.color1, this.dataset.color2);
+                        updateColorInputs();
+                        document.querySelectorAll('.style-preset').forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                    stylePresets.appendChild(presetElement);
+                });
+            }
+            
+            // 更新对方消息统计
+            function updateWordStats() {
+                partnerWordStats = {};
+                chatHistory.forEach(msg => {
+                    if (msg.type === 'received') {
+                        const text = msg.text.trim();
+                        if (text) {
+                            partnerWordStats[text] = (partnerWordStats[text] || 0) + 1;
+                        }
+                    }
+                });
+                saveData();
+            }
+            
+            // 渲染对方常用语统计
+            function renderWordStats() {
+                wordStatsList.innerHTML = '';
+                const sortedStats = Object.entries(partnerWordStats)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 20);
+                
+                if (sortedStats.length === 0) {
+                    wordStatsList.innerHTML = '<div class="word-stat-item">暂无统计数据</div>';
+                    return;
+                }
+                
+                sortedStats.forEach(([text, count], index) => {
+                    const statItem = document.createElement('div');
+                    statItem.className = 'word-stat-item';
+                    const rank = index + 1;
+                    let rankColor = '#ff6b9d';
+                    if (rank === 1) rankColor = '#ff4757';
+                    if (rank === 2) rankColor = '#ff6b9d';
+                    if (rank === 3) rankColor = '#ffa502';
+                    
+                    statItem.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: ${rankColor}; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">${rank}</span>
+                            <span>${text}</span>
+                        </div>
+                        <span class="word-count">${count}次</span>
+                    `;
+                    wordStatsList.appendChild(statItem);
+                });
+            }
+            
+            // 启动自动发送消息
+            function startAutoSend() {
+                if (autoSendTimer) clearTimeout(autoSendTimer);
+                if (userData.autoSendEnabled) {
+                    const randomTime = Math.floor(Math.random() * (180000 - 30000)) + 30000;
+                    autoSendTimer = setTimeout(() => {
+                        sendRandomMessage();
+                        startAutoSend();
+                    }, randomTime);
+                }
+            }
+            
+            // 发送随机消息
+            function sendRandomMessage() {
+                if (autoReplies.length === 0) return;
+                const randomReply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
+                addMessageToHistory(randomReply, 'received');
+            }
+            
+            // 发送消息
+            function sendMessage() {
+                const messageText = messageInput.value.trim();
+                if (messageText === '') return;
+                
+                addMessageToHistory(messageText, 'sent');
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                
+                // 模拟回复
+                const replyCount = Math.floor(Math.random() * 3) + 1;
+                let delay = 1000;
+                
+                for (let i = 0; i < replyCount; i++) {
+                    setTimeout(() => {
+                        const randomReply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
+                        addMessageToHistory(randomReply, 'received');
+                    }, delay);
+                    delay += 1000 + Math.random() * 2000;
+                }
+            }
+            
+            // 添加消息到历史记录
+            function addMessageToHistory(text, type) {
+                const now = new Date();
+                const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                const dateString = getCurrentDate();
+                
+                const message = {
+                    text: text,
+                    type: type,
+                    time: timeString,
+                    date: dateString
+                };
+                
+                chatHistory.push(message);
+                if (type === 'received') {
+                    updateWordStats();
+                }
+                saveData();
+                renderChatHistory();
+            }
+            
+            // 渲染聊天记录
+            function renderChatHistory() {
+                chatMessages.innerHTML = '';
+                let lastDate = '';
+                
+                chatHistory.forEach(msg => {
+                    const messageDate = msg.date || getCurrentDate();
+                    if (messageDate !== lastDate) {
+                        const dateDivider = document.createElement('div');
+                        dateDivider.className = 'date-divider';
+                        dateDivider.innerHTML = `<span>${formatDate(messageDate)}</span>`;
+                        chatMessages.appendChild(dateDivider);
+                        lastDate = messageDate;
+                    }
+                    
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `message ${msg.type}`;
+                    messageElement.innerHTML = `
+                        <div class="message-content">${msg.text}</div>
+                        <div class="message-time">${msg.time}</div>
+                    `;
+                    chatMessages.appendChild(messageElement);
+                });
+                
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // 渲染回复列表
+            function renderReplyList() {
+                replyList.innerHTML = '';
+                autoReplies.forEach((reply, index) => {
+                    const replyItem = document.createElement('div');
+                    replyItem.className = 'reply-item';
+                    replyItem.innerHTML = `
+                        <span>${reply}</span>
+                        <button class="delete-reply" data-index="${index}">×</button>
+                    `;
+                    replyList.appendChild(replyItem);
+                });
+                
+                document.querySelectorAll('.delete-reply').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        autoReplies.splice(index, 1);
+                        saveData();
+                        renderReplyList();
+                    });
+                });
+            }
+            
+            // 添加初始消息
+            function addInitialMessages() {
+                const initialMessages = [
+                    { text: "欢迎来到私人聊天室！", type: "received", time: "10:00", date: getCurrentDate() },
+                    { text: "这里只有我们两个人，可以畅所欲言~", type: "received", time: "10:01", date: getCurrentDate() },
+                    { text: "太好了！我喜欢这种私密的感觉", type: "sent", time: "10:02", date: getCurrentDate() },
+                    { text: "贴贴🥰", type: "received", time: "10:03", date: getCurrentDate() }
+                ];
+                
+                initialMessages.forEach(msg => {
+                    chatHistory.push(msg);
+                });
+                
+                updateWordStats();
+                saveData();
+            }
+            
+            // 获取当前日期
+            function getCurrentDate() {
+                const now = new Date();
+                return `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+            }
+            
+            // 格式化日期显示
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (date.toDateString() === today.toDateString()) {
+                    return '今天';
+                } else if (date.toDateString() === yesterday.toDateString()) {
+                    return '昨天';
+                } else {
+                    return `${date.getMonth()+1}月${date.getDate()}日`;
+                }
+            }
+            
+            // 事件处理函数
+            function saveUserSettingsHandler() {
+                userData.nickname = userNickname.value || '用户';
+                userData.partnerNickname = partnerNickname.value || '对方';
+                saveData();
+                userSettingsModal.style.display = 'none';
+                alert('设置已保存！');
+            }
+            
+            function applyAppearanceHandler() {
+                applyBubbleColors(sentColor1.value, sentColor2.value);
+                updateColorInputs();
+                renderStylePresets();
+                appearanceModal.style.display = 'none';
+                alert('外观设置已更新！');
+            }
+            
+            function addReplyHandler() {
+                const replyText = newReply.value.trim();
+                if (replyText === '') {
+                    alert('请输入回复内容！');
+                    return;
+                }
+                autoReplies.push(replyText);
+                saveData();
+                renderReplyList();
+                newReply.value = '';
+                alert('回复已添加！');
+            }
+            
+            function clearWordStatsHandler() {
+                if (confirm('确定要清空所有统计吗？')) {
+                    partnerWordStats = {};
+                    updateWordStats();
+                    renderWordStats();
+                    alert('统计已清空！');
+                }
+            }
+            
+            // 启动应用
+            init();
+        });
+    </script>
+</body>
+</html>
